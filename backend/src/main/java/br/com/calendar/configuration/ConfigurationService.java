@@ -2,6 +2,7 @@ package br.com.calendar.configuration;
 
 import br.com.calendar.configuration.dto.ConfigurationResponseDTO;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class ConfigurationService {
@@ -32,5 +33,12 @@ public class ConfigurationService {
 
         Configuration saved = configurationRepository.save(configuration);
         return configurationMapper.toResponse(saved);
+    }
+
+    public ConfigurationResponseDTO getDefaultConfiguration(String userId) {
+        Optional<Configuration> configuration = configurationRepository.findById(userId);
+
+        return configuration.map(configurationMapper::toResponse)
+                .orElseGet(() -> createDefaultConfiguration(userId));
     }
 }
